@@ -1,0 +1,41 @@
+---
+- hosts: testing
+  gather_facts: false
+  become: true
+
+  tasks:
+
+  - name: Apt update
+    ansible.builtin.apt:
+      update_cache: true
+  
+  - name: Install requirements
+    ansible.builtin.apt:
+      pkg:
+      - apt-transport-https
+      - ca-certificates 
+      - curl 
+      - software-properties-common 
+      - mc
+  
+  - name: Install docker gpg key
+    ansible.builtin.apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+  
+  - name: Add docker repository
+    ansible.builtin.apt_repository:
+      repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+      state: present
+
+  - name: Apt update
+    ansible.builtin.apt:
+      update_cache: true
+  
+  - name: Install docker-ce
+    ansible.builtin.apt:
+      name: docker-ce
+      state: present
+  
+  - name: Add current user to docker group
+    ansible.builtin.shell: usermod -aG docker ${USER}
