@@ -38,4 +38,7 @@
       state: present
   
   - name: Add current user to docker group
-    ansible.builtin.shell: usermod -aG docker ${USER}
+    ansible.builtin.user:
+      name: ubuntu
+      groups: docker
+      append: yes
