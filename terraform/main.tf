@@ -11,8 +11,18 @@ terraform {
   }
 }
 
+data "aws_ami" "ubuntu20_latest" {
+    owners = [ "099720109477" ]
+    most_recent = true
+    
+    filter {
+        name = "name"
+        values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+    }
+}
+
 resource "aws_instance" "t2micro_ubuntu_test" {
-    ami = "ami-06148e0e81e5187c8"
+    ami = data.aws_ami.ubuntu20_latest.id
     instance_type = "t2.micro"
     vpc_security_group_ids = [ aws_security_group.allow_ports.id ]
     key_name = "ter_aws_key"
