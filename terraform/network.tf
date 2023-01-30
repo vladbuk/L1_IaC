@@ -10,7 +10,7 @@ resource "aws_vpc" "main_vpc" {
 resource "aws_subnet" "subnet1" {
   vpc_id = aws_vpc.main_vpc.id
   cidr_block = "172.16.1.0/24"
-  availability_zone = data.aws_availability_zones.working_zones.names[0]
+  availability_zone = "eu-central-1a"
   map_public_ip_on_launch = true
   tags = {
     "Name" = "Subnet1"
