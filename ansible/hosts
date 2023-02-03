@@ -3,6 +3,3 @@ prod ansible_host=vladbuk.site
 
 [testing]
 test ansible_host=test.vladbuk.site
-
-[local]
-localhost
