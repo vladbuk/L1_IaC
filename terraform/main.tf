@@ -29,6 +29,11 @@ resource "aws_instance" "t2micro_ubuntu_test" {
     subnet_id = aws_subnet.subnet1.id
     private_ip = "172.16.1.100"
 
+    root_block_device {
+        volume_size = 15
+        volume_type = "gp2"
+    }
+
     tags = {
         Name = "t2micro_ubuntu_test"
         Env = "testing"
@@ -43,6 +48,11 @@ resource "aws_instance" "t2micro_ubuntu_prod" {
     vpc_security_group_ids = [ aws_security_group.allow_ports.id ]
     subnet_id = aws_subnet.subnet1.id
     private_ip = "172.16.1.10"
+
+    root_block_device {
+        volume_size = 15
+        volume_type = "gp2"
+    }
 
     tags = {
         Name = "t2micro_ubuntu_prod"
