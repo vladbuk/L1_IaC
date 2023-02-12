@@ -9,6 +9,15 @@ resource "aws_alb" "alb" {
   }
 }
 
+resource "aws_acm_certificate" "test_cert" {
+  domain_name       = "test.vladbuk.site"
+  validation_method = "DNS"
+
+  tags = {
+    name = "test-cert"
+  }
+}
+
 resource "aws_alb_listener" "alb_listener" {
   load_balancer_arn = aws_alb.alb.arn
   port              = "80"
@@ -26,7 +35,7 @@ resource "aws_alb_listener_rule" "listener_rule" {
   priority     = 10
   action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.test.id
+    target_group_arn = aws_alb_target_group.test.arn
   }   
   condition {
     host_header {
@@ -47,6 +56,53 @@ resource "aws_alb_target_group" "test" {
 
 resource "aws_alb_target_group_attachment" "test" {
   target_group_arn = aws_alb_target_group.test.arn
+  target_id        = aws_instance.t2micro_ubuntu_test.id
+  port             = 8080
+}
+
+
+
+# https listener
+
+resource "aws_alb_listener" "alb_https_listener" {
+  load_balancer_arn = aws_alb.alb.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  certificate_arn = aws_acm_certificate.test_cert.arn
+  
+  default_action {
+    target_group_arn = aws_alb_target_group.test.arn
+    type             = "forward"
+  }
+}
+
+resource "aws_alb_listener_rule" "https_listener_rule" {
+  depends_on   = [ aws_alb_target_group.https_test ]
+  listener_arn = aws_alb_listener.alb_https_listener.arn
+  priority     = 10
+  action {
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.https_test.arn
+  }   
+  condition {
+    host_header {
+      values = ["test.vladbuk.site"]
+    }
+  }
+}
+
+resource "aws_alb_target_group" "https_test" {
+  name     = "https-test"
+  port     = "443"
+  protocol = "HTTPS"
+  vpc_id   = aws_vpc.main_vpc.id
+  tags = {
+    name = "https-test"
+  }   
+}
+
+resource "aws_alb_target_group_attachment" "https_test" {
+  target_group_arn = aws_alb_target_group.https_test.arn
   target_id        = aws_instance.t2micro_ubuntu_test.id
   port             = 8080
 }
