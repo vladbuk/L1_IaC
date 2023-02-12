@@ -3,12 +3,20 @@ data "aws_route53_zone" "selected" {
   private_zone = false
 }
 
+# resource "aws_route53_record" "test" {
+#   zone_id = data.aws_route53_zone.selected.zone_id
+#   name    = "test.${data.aws_route53_zone.selected.name}"
+#   type    = "A"
+#   ttl     = 600
+#   records = [aws_instance.t2micro_ubuntu_test.public_ip]
+# }
+
 resource "aws_route53_record" "test" {
   zone_id = data.aws_route53_zone.selected.zone_id
   name    = "test.${data.aws_route53_zone.selected.name}"
-  type    = "A"
+  type    = "CNAME"
   ttl     = 600
-  records = [aws_instance.t2micro_ubuntu_test.public_ip]
+  records = [ aws_alb.alb.dns_name ]
 }
 
 resource "aws_route53_record" "prod" {

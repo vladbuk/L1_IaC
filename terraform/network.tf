@@ -17,6 +17,16 @@ resource "aws_subnet" "subnet1" {
   }
 }
 
+resource "aws_subnet" "subnet2" {
+  vpc_id = aws_vpc.main_vpc.id
+  cidr_block = "172.16.2.0/24"
+  availability_zone = "eu-central-1b"
+  map_public_ip_on_launch = true
+  tags = {
+    "Name" = "Subnet2"
+  }
+}
+
 # resource "aws_network_interface" "ether1" {
 #   subnet_id = aws_subnet.subnet1.id
 #   private_ips = [ "172.16.1.10" ]
@@ -46,6 +56,11 @@ resource "aws_route_table" "main_route" {
 
 resource "aws_route_table_association" "main_route_asso" {
   subnet_id = aws_subnet.subnet1.id
+  route_table_id = aws_route_table.main_route.id
+}
+
+resource "aws_route_table_association" "main_route_asso2" {
+  subnet_id = aws_subnet.subnet2.id
   route_table_id = aws_route_table.main_route.id
 }
 

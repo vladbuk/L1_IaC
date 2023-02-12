@@ -1,7 +1,7 @@
 resource "aws_alb" "alb" {
   name            = "test-alb"
   load_balancer_type = "application"
-  subnets         = [ aws_subnet.subnet1.id ]
+  subnets         = [ aws_subnet.subnet1.id, aws_subnet.subnet2.id ]
   security_groups = [ aws_security_group.allow_ports.id ]
   internal        = false
   tags = {
@@ -12,7 +12,7 @@ resource "aws_alb" "alb" {
 resource "aws_alb_listener" "alb_listener" {
   load_balancer_arn = aws_alb.alb.arn
   port              = "80"
-  protocol          = "tcp"
+  protocol          = "HTTP"
   
   default_action {
     target_group_arn = aws_alb_target_group.test.arn
