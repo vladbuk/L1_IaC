@@ -73,7 +73,7 @@ resource "aws_security_group" "allow_ports" {
   vpc_id      = aws_vpc.main_vpc.id 
 
   dynamic "ingress" {
-    for_each = ["22", "80", "8080", "3000"]
+    for_each = ["22", "80", "8080"]
     content {
       description      = "open tcp ports"
       from_port        = ingress.value
