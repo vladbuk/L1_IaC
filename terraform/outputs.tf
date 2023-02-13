@@ -28,3 +28,7 @@ output "instance_prod_public_ip" {
 output "instance_prod_public_dns" {
   value = aws_instance.t2micro_ubuntu_prod.public_dns
 }
+
+output "elb_public_dns_name" {
+  value = aws_alb.alb.dns_name
+}

@@ -12,13 +12,13 @@ data "aws_route53_zone" "selected" {
 # }
 
 resource "aws_route53_record" "test" {
-  for_each = {
-    for dvo in aws_acm_certificate.test_cert.domain_validation_options : dvo.domain_name => {
-      name   = dvo.resource_record_name
-      record = dvo.resource_record_value
-      type   = dvo.resource_record_type
-    }
-  }
+  # for_each = {
+  #   for dvo in aws_acm_certificate.test_cert.domain_validation_options : dvo.domain_name => {
+  #     name   = dvo.resource_record_name
+  #     record = dvo.resource_record_value
+  #     type   = dvo.resource_record_type
+  #   }
+  # }
   zone_id = data.aws_route53_zone.selected.zone_id
   name    = "test.${data.aws_route53_zone.selected.name}"
   type    = "CNAME"

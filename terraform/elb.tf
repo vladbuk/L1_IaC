@@ -9,15 +9,6 @@ resource "aws_alb" "alb" {
   }
 }
 
-resource "aws_acm_certificate" "test_cert" {
-  domain_name       = "test.vladbuk.site"
-  validation_method = "DNS"
-
-  tags = {
-    name = "test-cert"
-  }
-}
-
 resource "aws_alb_listener" "alb_listener" {
   load_balancer_arn = aws_alb.alb.arn
   port              = "80"
@@ -64,11 +55,20 @@ resource "aws_alb_target_group_attachment" "test" {
 
 # https listener
 
+# resource "aws_acm_certificate" "test_cert" {
+#   domain_name       = "test.vladbuk.site"
+#   validation_method = "DNS"
+
+#   tags = {
+#     name = "test-cert"
+#   }
+# }
+
 resource "aws_alb_listener" "alb_https_listener" {
   load_balancer_arn = aws_alb.alb.arn
   port              = "443"
   protocol          = "HTTPS"
-  certificate_arn = aws_acm_certificate.test_cert.arn
+  certificate_arn = "arn:aws:acm:eu-central-1:054889260026:certificate/c4d4b5f1-b623-43fb-aed4-761d6d294897"
   
   default_action {
     target_group_arn = aws_alb_target_group.test.arn
@@ -77,12 +77,12 @@ resource "aws_alb_listener" "alb_https_listener" {
 }
 
 resource "aws_alb_listener_rule" "https_listener_rule" {
-  depends_on   = [ aws_alb_target_group.https_test ]
+  depends_on   = [ aws_alb_target_group.test ]
   listener_arn = aws_alb_listener.alb_https_listener.arn
   priority     = 10
   action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.https_test.arn
+    target_group_arn = aws_alb_target_group.test.arn
   }   
   condition {
     host_header {
@@ -91,18 +91,18 @@ resource "aws_alb_listener_rule" "https_listener_rule" {
   }
 }
 
-resource "aws_alb_target_group" "https_test" {
-  name     = "https-test"
-  port     = "443"
-  protocol = "HTTPS"
-  vpc_id   = aws_vpc.main_vpc.id
-  tags = {
-    name = "https-test"
-  }   
-}
+# resource "aws_alb_target_group" "https_test" {
+#   name     = "https-test"
+#   port     = "443"
+#   protocol = "HTTPS"
+#   vpc_id   = aws_vpc.main_vpc.id
+#   tags = {
+#     name = "https-test"
+#   }   
+# }
 
-resource "aws_alb_target_group_attachment" "https_test" {
-  target_group_arn = aws_alb_target_group.https_test.arn
-  target_id        = aws_instance.t2micro_ubuntu_test.id
-  port             = 8080
-}
+# resource "aws_alb_target_group_attachment" "https_test" {
+#   target_group_arn = aws_alb_target_group.https_test.arn
+#   target_id        = aws_instance.t2micro_ubuntu_test.id
+#   port             = 8080
+# }
