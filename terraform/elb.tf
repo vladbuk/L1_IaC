@@ -18,16 +18,35 @@ resource "aws_alb_listener" "alb_listener" {
     target_group_arn = aws_alb_target_group.test.arn
     type             = "forward"
   }
+
+  # default_action {
+  #   target_group_arn = aws_alb_target_group.test.arn
+  #   type = "redirect"
+  #   redirect {
+  #     port        = "443"
+  #     protocol    = "HTTPS"
+  #     status_code = "HTTP_301"
+  #   }
+  # }
 }
 
 resource "aws_alb_listener_rule" "listener_rule" {
   depends_on   = [ aws_alb_target_group.test ]
   listener_arn = aws_alb_listener.alb_listener.arn
   priority     = 10
+  # action {
+  #   type             = "forward"
+  #   target_group_arn = aws_alb_target_group.test.arn
+  # }  
   action {
-    type             = "forward"
-    target_group_arn = aws_alb_target_group.test.arn
-  }   
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  } 
   condition {
     host_header {
       values = ["test.vladbuk.site"]
