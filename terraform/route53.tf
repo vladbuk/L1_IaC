@@ -30,9 +30,12 @@ resource "aws_route53_record" "prodip" {
 resource "aws_route53_record" "prod" {
   zone_id = data.aws_route53_zone.selected.zone_id
   name    = "${data.aws_route53_zone.selected.name}"
-  type    = "CNAME"
-  ttl     = 600
-  records = [ aws_alb.alb.dns_name ]
+  type    = "A"
+  alias {
+    name                   = aws_alb.alb.dns_name
+    zone_id                = aws_alb.alb.zone_id
+    evaluate_target_health = true
+  }
 }
 
 resource "aws_route53_record" "www-prod" {
