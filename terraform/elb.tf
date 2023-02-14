@@ -2,7 +2,7 @@ resource "aws_alb" "alb" {
   name            = "test-alb"
   load_balancer_type = "application"
   subnets         = [ aws_subnet.subnet1.id, aws_subnet.subnet2.id ]
-  security_groups = [ aws_security_group.allow_ports.id ]
+  security_groups = [ aws_security_group.alb_ports.id ]
   internal        = false
   tags = {
     Name = "test-alb"
