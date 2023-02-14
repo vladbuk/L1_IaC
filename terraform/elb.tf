@@ -117,6 +117,21 @@ resource "aws_alb_listener_rule" "https_prod_listener_rule" {
   }
 }
 
+resource "aws_alb_listener_rule" "https_www_prod_listener_rule" {
+  depends_on   = [ aws_alb_target_group.prod ]
+  listener_arn = aws_alb_listener.alb_https_listener.arn
+  priority     = 20
+  
+  action {
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.prod.arn
+  }   
+  condition {
+    host_header {
+      values = ["www.vladbuk.site"]
+    }
+  }
+}
 
 # PRODUCTION target group
 resource "aws_alb_target_group" "prod" {
