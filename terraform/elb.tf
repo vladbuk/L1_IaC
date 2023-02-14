@@ -33,7 +33,7 @@ resource "aws_alb_listener" "alb_listener" {
   protocol          = "HTTP"
   
   default_action {
-    target_group_arn = aws_alb_target_group.test.arn
+    target_group_arn = aws_alb_target_group.prod.arn
     type             = "forward"
   }
 
@@ -67,7 +67,7 @@ resource "aws_alb_listener_rule" "listener_rule" {
   } 
   condition {
     host_header {
-      values = ["test.vladbuk.site"]
+      values = ["vladbuk.site"]
     }
   }
 }
@@ -80,7 +80,7 @@ resource "aws_alb_listener" "alb_https_listener" {
   certificate_arn = "arn:aws:acm:eu-central-1:054889260026:certificate/c4d4b5f1-b623-43fb-aed4-761d6d294897"
   
   default_action {
-    target_group_arn = aws_alb_target_group.test.arn
+    target_group_arn = aws_alb_target_group.prod.arn
     type             = "forward"
   }
 }
