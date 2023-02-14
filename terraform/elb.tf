@@ -48,7 +48,7 @@ resource "aws_alb_listener" "alb_listener" {
   # }
 }
 
-resource "aws_alb_listener_rule" "listener_rule" {
+resource "aws_alb_listener_rule" "listener_test_rule" {
   depends_on   = [ aws_alb_target_group.test ]
   listener_arn = aws_alb_listener.alb_listener.arn
   priority     = 10
@@ -56,6 +56,27 @@ resource "aws_alb_listener_rule" "listener_rule" {
   #   type             = "forward"
   #   target_group_arn = aws_alb_target_group.test.arn
   # }  
+  action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  } 
+  condition {
+    host_header {
+      values = ["test.vladbuk.site"]
+    }
+  }
+}
+
+resource "aws_alb_listener_rule" "listener_prod_rule" {
+  depends_on   = [ aws_alb_target_group.prod ]
+  listener_arn = aws_alb_listener.alb_listener.arn
+  priority     = 20
+ 
   action {
     type = "redirect"
 
