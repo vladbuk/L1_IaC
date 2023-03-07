@@ -1,5 +1,6 @@
 [production]
-prod ansible_host=prodip.vladbuk.site
+prod ansible_host=prod1ip.vladbuk.site
+prod ansible_host=prod2ip.vladbuk.site
 
 [testing]
 test ansible_host=testip.vladbuk.site
