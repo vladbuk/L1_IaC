@@ -24,7 +24,7 @@ resource "aws_route53_record" "prod1ip" {
   name    = "prod1ip.${data.aws_route53_zone.selected.name}"
   type    = "A"
   ttl     = 600
-  records = [aws_instance.t2micro_ubuntu_prod1.public_ip]
+  records = [aws_instance.t2micro_ubuntu_prod_1.public_ip]
 }
 
 resource "aws_route53_record" "prod2ip" {
@@ -32,7 +32,7 @@ resource "aws_route53_record" "prod2ip" {
   name    = "prod2ip.${data.aws_route53_zone.selected.name}"
   type    = "A"
   ttl     = 600
-  records = [aws_instance.t2micro_ubuntu_prod2.public_ip]
+  records = [aws_instance.t2micro_ubuntu_prod_2.public_ip]
 }
 
 resource "aws_route53_record" "prod" {
