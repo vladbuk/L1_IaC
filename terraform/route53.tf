@@ -19,12 +19,20 @@ resource "aws_route53_record" "test" {
   records = [ aws_alb.alb.dns_name ]
 }
 
-resource "aws_route53_record" "prodip" {
+resource "aws_route53_record" "prod1ip" {
   zone_id = data.aws_route53_zone.selected.zone_id
-  name    = "prodip.${data.aws_route53_zone.selected.name}"
+  name    = "prod1ip.${data.aws_route53_zone.selected.name}"
   type    = "A"
   ttl     = 600
-  records = [aws_instance.t2micro_ubuntu_prod.public_ip]
+  records = [aws_instance.t2micro_ubuntu_prod1.public_ip]
+}
+
+resource "aws_route53_record" "prod2ip" {
+  zone_id = data.aws_route53_zone.selected.zone_id
+  name    = "prod2ip.${data.aws_route53_zone.selected.name}"
+  type    = "A"
+  ttl     = 600
+  records = [aws_instance.t2micro_ubuntu_prod2.public_ip]
 }
 
 resource "aws_route53_record" "prod" {

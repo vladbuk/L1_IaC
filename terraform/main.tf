@@ -27,7 +27,7 @@ resource "aws_instance" "t2micro_ubuntu_test" {
     key_name = "ter_aws_key"
     vpc_security_group_ids = [ aws_security_group.allow_ports.id ]
     subnet_id = aws_subnet.subnet2.id
-    private_ip = "172.16.2.20"
+    private_ip = "172.16.2.200"
 
     root_block_device {
         volume_size = 12
@@ -41,7 +41,7 @@ resource "aws_instance" "t2micro_ubuntu_test" {
     //user_data = file("user_data.sh")
 }
 
-resource "aws_instance" "t2micro_ubuntu_prod" {
+resource "aws_instance" "t2micro_ubuntu_prod_1" {
     ami = data.aws_ami.ubuntu20_latest.id
     instance_type = "t2.micro"
     key_name = "ter_aws_key"
@@ -55,7 +55,26 @@ resource "aws_instance" "t2micro_ubuntu_prod" {
     }
 
     tags = {
-        Name = "t2micro_ubuntu_prod"
+        Name = "t2micro_ubuntu_prod_1"
+        Env = "production"
+    }
+}
+
+resource "aws_instance" "t2micro_ubuntu_prod_2" {
+    ami = data.aws_ami.ubuntu20_latest.id
+    instance_type = "t2.micro"
+    key_name = "ter_aws_key"
+    vpc_security_group_ids = [ aws_security_group.allow_ports.id ]
+    subnet_id = aws_subnet.subnet2.id
+    private_ip = "172.16.2.10"
+
+    root_block_device {
+        volume_size = 12
+        volume_type = "gp2"
+    }
+
+    tags = {
+        Name = "t2micro_ubuntu_prod_2"
         Env = "production"
     }
 }
