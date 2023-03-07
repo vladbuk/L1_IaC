@@ -54,11 +54,18 @@ pipeline {
                         docker image prune -f
                     '''
 
-                    // Copy file to remote server 
-                    sshPublisher(publishers: [sshPublisherDesc(configName: 't2micro_ubuntu_prod', verbose: 'true',
+                    // Copy file to remote server 1
+                    sshPublisher(publishers: [sshPublisherDesc(configName: 't2micro_ubuntu_prod_1', verbose: 'true',
                     transfers: [ sshTransfer(flatten: false,
                         //remoteDirectory: '/',
                         //sourceFiles: 'dist.zip',
+                        execCommand: command
+                        )])
+                    ])
+
+                    // Copy file to remote server 2
+                    sshPublisher(publishers: [sshPublisherDesc(configName: 't2micro_ubuntu_prod_2', verbose: 'true',
+                    transfers: [ sshTransfer(flatten: false,
                         execCommand: command
                         )])
                     ])
