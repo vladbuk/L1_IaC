@@ -164,12 +164,12 @@ resource "aws_alb_target_group" "prod" {
 
 resource "aws_alb_target_group_attachment" "prod1" {
   target_group_arn = aws_alb_target_group.prod.arn
-  target_id        = aws_instance.t2micro_ubuntu_prod1.id
+  target_id        = aws_instance.t2micro_ubuntu_prod_1.id
   port             = 8080
 }
 
 resource "aws_alb_target_group_attachment" "prod2" {
   target_group_arn = aws_alb_target_group.prod.arn
-  target_id        = aws_instance.t2micro_ubuntu_prod2.id
+  target_id        = aws_instance.t2micro_ubuntu_prod_2.id
   port             = 8080
 }
