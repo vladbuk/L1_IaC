@@ -1,0 +1,46 @@
+pipeline {
+    agent { label 'main' }
+
+    parameters {
+        choice choices: ['apply', 'destroy'], description: 'What to do: create or destroy?', name: 'WHATTODO'
+    }
+
+    environment {
+        WORKDIR = "./terraform"
+        TERCOMMAND = "${params.WHATTODO}"
+    }
+
+    stages {
+        stage('Pull') {
+            steps {
+                echo 'Git pull'
+                git branch: 'main', credentialsId: 'vladbuk-github', url: 'git@github.com:vladbuk/L1_IaC.git'
+            }
+        }
+        stage('Init') {
+            steps {
+                echo 'Terraform init'
+                sh '''cd ${WORKDIR}
+                    pwd
+                    terraform init -input=false'''
+            }
+        }
+        stage('Plan') {
+            steps {
+                echo 'Terraform plan'
+                sh '''cd ${WORKDIR}
+                    pwd
+                    terraform plan -input=false'''
+            }
+        }
+        stage('Apply-Destroy') {
+            steps {
+                input "RUN TERRAFORM ${params.WHATTODO}?"
+                echo 'Terraform ${params.WHATTODO}'
+                sh '''cd ${WORKDIR}
+                    pwd
+                    terraform ${TERCOMMAND} -input=false -auto-approve'''
+            }
+        }
+    }
+}
