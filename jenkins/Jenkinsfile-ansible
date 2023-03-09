@@ -1,0 +1,46 @@
+pipeline {
+    agent { label 'main' }
+
+    parameters {
+        choice choices: ['testing', 'production', 'all'], description: 'You can select which instance will be provision.', name: 'Select_environment'
+    }
+
+    environment {
+        ANSIBLE_PRIVATE_KEY=credentials('ter_aws_key') 
+        ANSIBLE_TARGET="${params.Select_environment}"
+    }
+
+    stages {
+        stage('Pulling') {
+            steps {
+                git branch: 'main', credentialsId: 'vladbuk-github', url: 'git@github.com:vladbuk/L1_IaC.git'
+            }
+        }
+        stage('Ping') {
+            steps {
+                sh '''
+                    ssh-keygen -f "/var/lib/jenkins/.ssh/known_hosts" -R "testip.vladbuk.site"
+                    ssh-keygen -f "/var/lib/jenkins/.ssh/known_hosts" -R "prod1ip.vladbuk.site"
+                    ssh-keygen -f "/var/lib/jenkins/.ssh/known_hosts" -R "prod2ip.vladbuk.site"
+                    pwd
+                    cd ansible
+                    pwd
+                    ansible -m ping --private-key=${ANSIBLE_PRIVATE_KEY} ${ANSIBLE_TARGET}
+                '''
+            }
+        }
+        stage('Provisioning') {
+            steps {
+                sh '''
+                    #ssh-keygen -f "/var/lib/jenkins/.ssh/known_hosts" -R "testip.vladbuk.site"
+                    #ssh-keygen -f "/var/lib/jenkins/.ssh/known_hosts" -R "prodip.vladbuk.site"
+                    cd ansible
+                    #test_ip=`cd ../terraform/ && terraform output | grep test_public_ip | cut -d \" -f 2`
+                    #sed -i "s/test.vladbuk.site/${test_ip}/" hosts
+                    pwd
+                    ansible-playbook --private-key=${ANSIBLE_PRIVATE_KEY} playbook_aws_init.yml -l ${ANSIBLE_TARGET}
+                '''
+            }
+        }
+    }
+}
